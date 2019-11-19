@@ -2823,7 +2823,6 @@
 				31AD9A3C2285B53100F19090 /* AIRMapCircleManager.m in Sources */,
 				B5FB74DE1FF6DADC001C764B /* EXVersionManager.m in Sources */,
 				B5FB74DE1FF6DADC001C764B /* EXVersionManager.mm in Sources */,
-				BB5BD32120AEFCB4007E02FC /* REAValueNode.m in Sources */,
 				31AD99E22285B51100F19090 /* AIRGoogleMapCallout.m in Sources */,
 				7043DF7A2283303800272D74 /* RNSVGUseManager.m in Sources */,
 				B52217D61F146658002241BA /* EXKernelServiceRegistry.m in Sources */,
