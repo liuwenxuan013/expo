@@ -1,4 +1,5 @@
-import { NativeModules } from 'react-native';
+// @ts-ignore
+import { NativeModules, TurboModuleRegistry } from 'react-native';
 
 const NativeProxy = NativeModules.NativeUnimoduleProxy;
 const modulesConstantsKey = 'modulesConstants';
@@ -10,25 +11,39 @@ type ProxyNativeModule = {
   removeListeners: (count: number) => void;
 };
 
+type MethodInfo = {
+  name: string;
+  key: any;
+  argumentsCount: number;
+};
+
+function validateMethodCall(moduleName: string, methodInfo: MethodInfo, args: unknown[]) {
+  const { name: methodName, argumentsCount } = methodInfo;
+  if (argumentsCount !== args.length) {
+    throw new Error(
+      `Native method ${moduleName}.${methodName} expects ${argumentsCount} ${
+        argumentsCount === 1 ? 'argument' : 'arguments'
+      } but received ${args.length}`
+    );
+  }
+}
+
 const NativeModulesProxy: { [moduleName: string]: ProxyNativeModule } = {};
 
 if (NativeProxy) {
   Object.keys(NativeProxy[exportedMethodsKey]).forEach(moduleName => {
+    const turboModule = TurboModuleRegistry.get(moduleName);
     NativeModulesProxy[moduleName] = NativeProxy[modulesConstantsKey][moduleName] || {};
-    NativeProxy[exportedMethodsKey][moduleName].forEach(methodInfo => {
-      NativeModulesProxy[moduleName][methodInfo.name] = async (
-        ...args: unknown[]
-      ): Promise<any> => {
-        const { key, argumentsCount } = methodInfo;
-        if (argumentsCount !== args.length) {
-          throw new Error(
-            `Native method ${moduleName}.${methodInfo.name} expects ${argumentsCount} ${
-              argumentsCount === 1 ? 'argument' : 'arguments'
-            } but received ${args.length}`
-          );
-        }
-        return await NativeProxy.callMethod(moduleName, key, args);
-      };
+    NativeProxy[exportedMethodsKey][moduleName].forEach((methodInfo: MethodInfo) => {
+      NativeModulesProxy[moduleName][methodInfo.name] = turboModule
+        ? async (...args: unknown[]): Promise<any> => {
+            validateMethodCall(moduleName, methodInfo, args);
+            return await turboModule.callMethod(methodInfo.name, args);
+          }
+        : async (...args: unknown[]): Promise<any> => {
+            validateMethodCall(moduleName, methodInfo, args);
+            return await NativeProxy.callMethod(moduleName, methodInfo.key, args);
+          };
     });
 
     // These are called by EventEmitter (which is a wrapper for NativeEventEmitter)
