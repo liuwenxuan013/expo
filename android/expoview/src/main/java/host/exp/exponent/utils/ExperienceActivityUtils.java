@@ -99,12 +99,15 @@ public class ExperienceActivityUtils {
    *
    * We're using android:windowTranslucentStatus in our theme to enforce translucency during native SplashScreen period (because it's iOS default behaviour).
    * Therefore we need to adjust our approach to align with RN to ensure {@link com.facebook.react.modules.statusbar.StatusBarModule} works.
+   *
+   * https://chris.banes.dev/talks/2017/becoming-a-master-window-fitter-lon/
+   * https://www.youtube.com/watch?v=_mGDMVRO3iE
    */
   public static void configureStatusBar(final JSONObject manifest, final Activity activity) {
     @Nullable JSONObject statusBarOptions = manifest.optJSONObject(ExponentManifest.MANIFEST_STATUS_BAR_KEY);
 
     @Nullable String statusBarStyle = statusBarOptions != null ? statusBarOptions.optString(ExponentManifest.MANIFEST_STATUS_BAR_APPEARANCE) : null;
-    @Nullable String statusBarBackgroundColor = statusBarOptions != null ? statusBarOptions.optString(ExponentManifest.MANIFEST_STATUS_BAR_BACKGROUND_COLOR) : null;
+    @Nullable String statusBarBackgroundColor = statusBarOptions != null ? statusBarOptions.optString(ExponentManifest.MANIFEST_STATUS_BAR_BACKGROUND_COLOR, null) : null;
 
     // if statusBarColor isn't set -> statusBar has to be transparent
     boolean statusBarTranslucent = statusBarBackgroundColor == null;

@@ -126,7 +126,10 @@ export default class App extends React.Component {
           <Navigation theme={theme} />
         </ActionSheetProvider>
 
-        <StatusBar barStyle={theme === 'dark' ? 'light-content' : 'dark-content'} />
+        <StatusBar
+          barStyle={theme === 'dark' ? 'light-content' : 'dark-content'}
+          backgroundColor={theme === 'dark' ? '#000000' : '#ffffff'}
+        />
         {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
       </View>
     );
@@ -140,7 +143,7 @@ const styles = StyleSheet.create({
   },
   statusBarUnderlay: {
     height: Constants.statusBarHeight,
-    backgroundColor: 'rgba(0,0,0,0.0)',
+    backgroundColor: 'rgba(0,0,0,0)',
     position: 'absolute',
     top: 0,
     left: 0,
