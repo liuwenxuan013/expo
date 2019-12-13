@@ -18,7 +18,7 @@ Expo CLI is a tool for developing apps with Expo. In addition the command-line i
 We recommend installing Expo CLI globally, you can do this by running the following command:
 
 ```
-npm install -g expo-cli
+npx install -g expo-cli
 ```
 
 Verify that the installation was successful by running `expo whoami`. You're not logged in yet, so you will see "Not logged in". You can create an account by running `expo register` if you like, or if you have one already run `expo login`, but you also don't need an account to get started.
